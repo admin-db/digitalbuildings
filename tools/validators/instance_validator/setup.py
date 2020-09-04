@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Setup file for Instance Validator"""
+
 from setuptools import setup, find_packages
 
 setup(
-    name='instance-yaml-validator',
+    name='instance-validator',
     version='0.0.1',
     url='https://github.com/google/digitalbuildings',
     license='Apache License',

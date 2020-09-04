@@ -24,6 +24,7 @@ from __future__ import print_function
 import os
 
 from yamlformat.validator import base_lib
+from yamlformat.validator import findings_lib
 from yamlformat.validator import presubmit_validate_types_lib
 
 
@@ -43,8 +44,8 @@ def Validate(filter_text, original_directory, changed_directory, interactive=Tru
     changed_directory = original_directory
     original_directory = None
 
-  modified_base = _RecursiveDirWalk(original_directory)
-  modified_client = _RecursiveDirWalk(changed_directory)
+  modified_base = RecursiveDirWalk(original_directory)
+  modified_client = RecursiveDirWalk(changed_directory)
 
   if interactive:
     presubmit_validate_types_lib.RunInteractive(filter_text, modified_base,
@@ -52,8 +53,13 @@ def Validate(filter_text, original_directory, changed_directory, interactive=Tru
   else:
     findings = presubmit_validate_types_lib.RunPresubmit([], modified_base, modified_client)
     presubmit_validate_types_lib.PrintFindings(findings, '')
+    #TODO(@charbull): add diff files in the presubmit in modified base
+    findings_class = findings_lib.Findings()
+    findings_class.AddFindings(findings)
+    if not findings_class.IsValid():
+      raise Exception("The Ontology is no longer valid.")
 
-def _RecursiveDirWalk(directory):
+def RecursiveDirWalk(directory):
   """Walks recursively a directory and returns a list of PathParts.
 
   Args:
